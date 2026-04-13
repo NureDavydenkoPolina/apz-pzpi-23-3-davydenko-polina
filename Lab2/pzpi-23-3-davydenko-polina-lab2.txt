@@ -1,1 +1,465 @@
-﻿
+﻿Харківський національний університет радіоелектроніки
+Факультет комп’ютерних наук
+Катедра програмної інженерії
+
+
+
+ЗВІТ
+до лабораторної роботи №2
+з дисципліни «Архітектура програмного забезпечення»
+
+
+
+
+Виконала
+ст. гр. ПЗПІ-23-3 
+Давиденко Поліна
+Перевірив
+ст. викладач катедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+Харків 2026
+1 ІСТОРІЯ ЗМІН
+№ДатаВерсія звітуОпис змін та виправлень111.04.20260.1Створено розділ «Завдання»213.04.20260.2Створено розділ «Опис Виконаної роботи»
+
+
+2 ЗАВДАННЯ
+	Метою лабораторної роботи є розробка мобільного застосунку для платформи Android, який є частиною інформаційної системи SmartFood та взаємодіє з серверною частиною.
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+	У ході виконання лабораторної роботи було розроблено мобільний застосунок SmartFood для операційної системи Android з використанням мови Kotlin та фреймворку Jetpack Compose.
+	На початковому етапі було створено проєкт у середовищі Android Studio та налаштовано базову структуру застосунку. Для реалізації взаємодії з серверною частиною було використано бібліотеку Retrofit, за допомогою якої налаштовано обробку HTTP-запитів до REST API. Було реалізовано отримання списку страв із сервера та їх відображення у вигляді списку за допомогою компонента LazyColumn. Для представлення даних створено модель Dish, яка використовується для відображення меню.
+	Далі реалізовано механізм створення замовлення. При першому додаванні страви формується нове замовлення на сервері, після чого всі наступні страви додаються до нього. Ідентифікатор замовлення зберігається на стороні клієнта. Було створено окремий екран для перегляду замовлення, де відображається список обраних страв, їх кількість та загальна вартість. Дані завантажуються з сервера за допомогою відповідних API-запитів.
+	Реалізовано функціонал видалення позицій із замовлення. Після видалення відбувається повторне завантаження даних, що забезпечує актуальність відображеної інформації. Також додано можливість відправлення замовлення, після чого редагування стає недоступним, а користувач може створити нове замовлення. Для покращення користувацького досвіду було реалізовано вибір номера столика через випадаючий список. 
+	Було проведено кастомізацію інтерфейсу застосунку - змінено кольорову тему, додано інтерактивні елементи.
+	У процесі розробки було виправлено ряд помилок, пов’язаних із асинхронною обробкою даних, оновленням стану інтерфейсу та коректним обчисленням загальної вартості замовлення.
+	Діаграма прецедентів відображає основні сценарії взаємодії користувача з мобільним застосунком SmartFood. Користувач може обрати столик, переглянути меню, додати або видалити страви із замовлення, переглянути замовлення та відправити його (рисунок 1). 
+
+Рисунок 1 - UML діаграма прецедентів (Use Case Diagram)
+
+	Діаграма компонент відображає загальну архітектуру системи. Мобільний застосунок складається з інтерфейсу користувача та мережевого шару, реалізованого за допомогою Retrofit. Застосунок взаємодіє з сервером через HTTP-запити у форматі JSON. Серверна частина, реалізована на Flask, обробляє запити та виконує операції з базою даних SQL Server (рисунок 2).
+
+Рисунок 2 - UML діаграма компонент (Component Diagram)
+
+	Діаграма пакетів показує логічну структуру мобільного застосунку. Код поділений на основні пакети: ui, network та model. Пакет ui містить підпакет screens, у якому знаходяться екрани застосунку. Пакет network відповідає за взаємодію з сервером, а model містить структури даних. Залежності між пакетами зображені у вигляді пунктирних стрілок (рисунок 3).
+
+
+Рисунок 3 - UML діаграма пакетів (Package Diagram)
+
+	Діаграма діяльності відображає послідовність дій користувача та системи під час роботи із застосунком. Користувач відкриває застосунок, обирає столик і переглядає меню. Далі він може додавати страви до замовлення. Якщо замовлення ще не створене, система створює його та зберігає ідентифікатор. Користувач може змінювати замовлення, зокрема видаляти страви або додавати нові. Після завершення редагування замовлення відправляється на сервер (рисунок 4).
+
+Рисунок 4 - UML діаграма діяльності (Activity Diagram)
+
+4 ВИСНОВКИ
+	У результаті було розроблено мобільний застосунок, який забезпечує взаємодію з серверною частиною системи SmartFood.
+	Реалізовано основний функціонал системи: перегляд меню, створення замовлення, додавання та видалення страв, а також обчислення загальної вартості.
+
+5 ВИКОРИСТАНІ ДЖЕРЕЛА
+1. Download android studio & app tools - android developers. Android Developers. URL: https://developer.android.com/studio?hl (date of access: 11.04.2026).
+2. Introduction. Retrofit. URL: https://square.github.io/retrofit/ (date of access: 11.04.2026).
+3. Jetpack compose UI app development toolkit - android developers. Android Developers. URL: https://developer.android.com/compose (date of access: 11.04.2026).
+
+
+ДОДАТОК А
+Відеозапис
+Відеозапис доповіді: https://youtu.be/XrUe2gX0lQ4
+Хронологічний опис відеозапису:
+00:00 – Представлення, вступ
+00:21 – Коротко про мобільний програмний застосунок SmartFood
+00:39 –  Пояснення діаграм
+01:52 – Пояснення коду 
+03:25 – Пояснення коду MenuScreen
+06:04 – Пояснення коду OrderScreen 
+07:31 – Тестування застосунку 
+
+ДОДАТОК Б
+Приклади програмного коду
+Код файлу ApiService
+1 package com.example.smartfood
+2 
+3 import retrofit2.Call
+4 import retrofit2.http.Body
+5 import retrofit2.http.DELETE
+6 import retrofit2.http.GET
+7 import retrofit2.http.HTTP
+8 import retrofit2.http.POST
+9 import retrofit2.http.Path
+10 
+11 interface ApiService {
+12 
+13     @GET("/api/menu")
+14     fun getMenu(): Call<List<Dish>>
+15 
+16     @POST("/api/order/create")
+17     fun createOrder(@Body body: Map<String, Int>): Call<Map<String, Any>>
+18 
+19     @POST("/api/order/{id}/add-item")
+20     fun addItem(
+21         @Path("id") orderId: Int,
+22         @Body body: Map<String, Int>
+23     ): Call<Map<String, Any>>
+24 
+25     @GET("/api/order/{id}/total")
+26     fun getTotal(@Path("id") orderId: Int): Call<Map<String, Any>>
+27 
+28     @GET("/api/order/{id}/items")
+29     fun getItems(@Path("id") orderId: Int): Call<List<Map<String, Any>>>
+30 
+31     @HTTP(method = "DELETE", path = "/api/order/{id}/delete-item", hasBody = true)
+32     fun deleteItem(
+33         @Path("id") orderId: Int,
+34         @Body body: Map<String, Int>
+35     ): Call<Map<String, Any>>
+36 }
+37
+
+
+
+
+
+Код файлу MainActivity.kt
+1 package com.example.smartfood
+2 
+3 import android.os.Bundle
+4 import androidx.activity.ComponentActivity
+5 import androidx.activity.compose.setContent
+6 import androidx.compose.foundation.interaction.MutableInteractionSource
+7 import androidx.compose.foundation.layout.*
+8 import androidx.compose.foundation.lazy.LazyColumn
+9 import androidx.compose.foundation.lazy.items
+10 import androidx.compose.material3.*
+11 import androidx.compose.runtime.*
+12 import androidx.compose.ui.Modifier
+13 import androidx.compose.ui.unit.dp
+14 import com.example.smartfood.ui.theme.SmartFoodTheme
+15 import retrofit2.Call
+16 import retrofit2.Callback
+17 import retrofit2.Response
+18 import androidx.compose.foundation.interaction.collectIsPressedAsState
+19 
+20 class MainActivity : ComponentActivity() {
+21 
+22     override fun onCreate(savedInstanceState: Bundle?) {
+23         super.onCreate(savedInstanceState)
+24 
+25         setContent {
+26             SmartFoodTheme {
+27                 MenuScreen()
+28             }
+29         }
+30     }
+31 }
+32 
+33 @OptIn(ExperimentalMaterial3Api::class)
+34 @Composable
+35 fun MenuScreen() {
+36     var dishes by remember { mutableStateOf(listOf<Dish>()) }
+37     var orderId by remember { mutableStateOf<Int?>(null) }
+38     var screen by remember { mutableStateOf("menu") }
+39     var isSubmitted by remember { mutableStateOf(false) }
+40     var selectedTable by remember { mutableStateOf(1) }
+41     val tables = listOf(1, 2, 3, 4)
+42     var expanded by remember { mutableStateOf(false) }
+43 
+44     fun addDish(orderId: Int, dishId: Int) {
+45         RetrofitClient.api.addItem(
+46             orderId,
+47             mapOf("dish_id" to dishId, "quantity" to 1)
+48         ).enqueue(object : Callback<Map<String, Any>> {
+49             override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {}
+50             override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {}
+51         })
+52     }
+53 
+54     LaunchedEffect(Unit) {
+55         RetrofitClient.api.getMenu().enqueue(object : Callback<List<Dish>> {
+56             override fun onResponse(call: Call<List<Dish>>, response: Response<List<Dish>>) {
+57                 if (response.isSuccessful) {
+58                     dishes = response.body() ?: emptyList()
+59                 }
+60             }
+61 
+62             override fun onFailure(call: Call<List<Dish>>, t: Throwable) {}
+63         })
+64     }
+65 
+66     Column(
+67         modifier = Modifier
+68             .fillMaxSize()
+69             .padding(16.dp)
+70     ) {
+71         ExposedDropdownMenuBox(
+72             expanded = expanded,
+73             onExpandedChange = { expanded = !expanded }
+74         ) {
+75 
+76             TextField(
+77                 value = "Стіл №$selectedTable",
+78                 onValueChange = {},
+79                 readOnly = true,
+80                 label = { Text("Оберіть стіл") },
+81                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+82                 modifier = Modifier.menuAnchor().fillMaxWidth()
+83             )
+84 
+85             ExposedDropdownMenu(
+86                 expanded = expanded,
+87                 onDismissRequest = { expanded = false }
+88             ) {
+89                 tables.forEach { table ->
+90                     DropdownMenuItem(
+91                         text = { Text("Стіл №$table") },
+92                         onClick = {
+93                             selectedTable = table
+94                             expanded = false
+95                         }
+96                     )
+97                 }
+98             }
+99         }
+100 
+101         Button(
+102             onClick = {
+103                 if (orderId != null) screen = "order"
+104             },
+105             modifier = Modifier.fillMaxWidth()
+106         ) {
+107             Text("Моє замовлення")
+108         }
+109 
+110         Spacer(modifier = Modifier.height(16.dp))
+111 
+112         if (screen == "menu") {
+113 
+114             LazyColumn(
+115                 modifier = Modifier.fillMaxSize()
+116             ) {
+117                 items(dishes) { dish ->
+118 
+119                     Card(
+120                         modifier = Modifier
+121                             .fillMaxWidth()
+122                             .padding(8.dp)
+123                     ) {
+124 
+125                         Column(modifier = Modifier.padding(16.dp)) {
+126                             Text(
+127                                 text = dish.dish_name,
+128                                 style = MaterialTheme.typography.titleLarge.copy(
+129                                     color = MaterialTheme.colorScheme.primary
+130                                 )
+131                             )
+132                             Text("${dish.price} грн")
+133                             Text(dish.description)
+134 
+135                             val interactionSource = remember { MutableInteractionSource() }
+136                             val isPressed by interactionSource.collectIsPressedAsState()
+137 
+138                             Button(
+139                                 onClick = {
+140 
+141                                     if (orderId == null) {
+142                                         RetrofitClient.api.createOrder(mapOf("table_id" to selectedTable))
+143                                             .enqueue(object : Callback<Map<String, Any>> {
+144 
+145                                                 override fun onResponse(
+146                                                     call: Call<Map<String, Any>>,
+147                                                     response: Response<Map<String, Any>>
+148                                                 ) {
+149                                                     val id = (response.body()?.get("order_id") as Double).toInt()
+150                                                     orderId = id
+151 
+152                                                     addDish(id, dish.dish_id)
+153                                                 }
+154 
+155                                                 override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {}
+156                                             })
+157                                     } else {
+158                                         addDish(orderId!!, dish.dish_id)
+159                                     }
+160                                 },
+161                                 interactionSource = interactionSource,
+162                                 colors = ButtonDefaults.buttonColors(
+163                                     containerColor = if (isPressed)
+164                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+165                                     else
+166                                         MaterialTheme.colorScheme.primary
+167                                 ),
+168                                 modifier = Modifier.padding(top = 8.dp)
+169                             ) {
+170                                 Text("Додати")
+171                             }
+172                         }
+173                     }
+174                 }
+175             }
+176 
+177         } else {
+178 
+179             OrderScreen(orderId!!, dishes, isSubmitted,
+180                 onBack = {
+181                     screen = "menu"
+182 
+183                     if (isSubmitted) {
+184                         orderId = null
+185                         isSubmitted = false
+186                     }
+187                 },
+188                 onSubmit = {
+189                     isSubmitted = true
+190                 }
+191             )
+192         }
+193     }
+194 }
+195 
+196 @Composable
+197 fun OrderScreen(
+198     orderId: Int,
+199     dishes: List<Dish>,
+200     isSubmitted: Boolean,
+201     onBack: () -> Unit,
+202     onSubmit: () -> Unit
+203 ) {
+204 
+205     var orderItems by remember { mutableStateOf(listOf<Map<String, Any>>()) }
+206     var total by remember { mutableStateOf(0.0) }
+207 
+208     fun loadData() {
+209         RetrofitClient.api.getItems(orderId)
+210             .enqueue(object : Callback<List<Map<String, Any>>> {
+211                 override fun onResponse(
+212                     call: Call<List<Map<String, Any>>>,
+213                     response: Response<List<Map<String, Any>>>
+214                 ) {
+215                     orderItems = response.body() ?: emptyList()
+216                 }
+217 
+218                 override fun onFailure(call: Call<List<Map<String, Any>>>, t: Throwable) {}
+219             })
+220 
+221         RetrofitClient.api.getTotal(orderId)
+222             .enqueue(object : Callback<Map<String, Any>> {
+223                 override fun onResponse(
+224                     call: Call<Map<String, Any>>,
+225                     response: Response<Map<String, Any>>
+226                 ) {
+227                     total = (response.body()?.get("total_price") as? Double) ?: 0.0
+228                 }
+229 
+230                 override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {}
+231             })
+232     }
+233 
+234     LaunchedEffect(orderId) {
+235         loadData()
+236     }
+237 
+238     Column(
+239         modifier = Modifier
+240             .fillMaxSize()
+241             .padding(16.dp)
+242     ) {
+243 
+244         Button(onClick = onBack) {
+245             Text("Назад")
+246         }
+247 
+248         Spacer(modifier = Modifier.height(8.dp))
+249 
+250         Text("Моє замовлення", style = MaterialTheme.typography.titleLarge)
+251 
+252         Spacer(modifier = Modifier.height(8.dp))
+253 
+254         LazyColumn {
+255             items(orderItems) { item ->
+256 
+257                 val dishId = (item["dish_id"] as Double).toInt()
+258                 val quantity = (item["quantity"] as Double).toInt()
+259                 val price = item["unit_price"] as Double
+260                 val dishName = dishes.find { it.dish_id == dishId }?.dish_name ?: "Невідомо"
+261 
+262                 Card(
+263                     modifier = Modifier
+264                         .fillMaxWidth()
+265                         .padding(8.dp)
+266                 ) {
+267 
+268                     Row(
+269                         modifier = Modifier
+270                             .fillMaxWidth()
+271                             .padding(16.dp),
+272                         horizontalArrangement = Arrangement.SpaceBetween
+273                     ) {
+274 
+275                         Column {
+276                             Text(dishName, style = MaterialTheme.typography.titleMedium)
+277                             Text("Кількість: $quantity")
+278                             Text("Разом: ${price * quantity} грн")
+279                         }
+280 
+281                         if (!isSubmitted) {
+282                             Button(
+283                                 onClick = {
+284                                     RetrofitClient.api.deleteItem(
+285                                         orderId,
+286                                         mapOf("dish_id" to dishId)
+287                                     ).enqueue(object : Callback<Map<String, Any>> {
+288 
+289                                         override fun onResponse(
+290                                             call: Call<Map<String, Any>>,
+291                                             response: Response<Map<String, Any>>
+292                                         ) {
+293                                             loadData()
+294                                         }
+295 
+296                                         override fun onFailure(
+297                                             call: Call<Map<String, Any>>,
+298                                             t: Throwable
+299                                         ) {}
+300                                     })
+301                                 }
+302                             ) {
+303                                 Text("❌")
+304                             }
+305                         }
+306                     }
+307                 }
+308             }
+309         }
+310 
+311         Spacer(modifier = Modifier.height(16.dp))
+312 
+313         Text("Сума: $total грн", style = MaterialTheme.typography.titleLarge)
+314 
+315         Spacer(modifier = Modifier.height(16.dp))
+316 
+317         val isOrderValid = total > 0
+318 
+319         if (!isSubmitted) {
+320             Button(
+321                 onClick = onSubmit,
+322                 modifier = Modifier.fillMaxWidth(),
+323                 enabled = isOrderValid
+324             ) {
+325                 Text("Відправити замовлення")
+326             }
+327         } else {
+328             Text("Замовлення відправлено ✅")
+329 
+330             Spacer(modifier = Modifier.height(16.dp))
+331 
+332             Button(
+333                 onClick = onBack,
+334                 modifier = Modifier.fillMaxWidth()
+335             ) {
+336                 Text("Нове замовлення")
+337             }
+338         }
+339     }
+340 }
+2
+
+
