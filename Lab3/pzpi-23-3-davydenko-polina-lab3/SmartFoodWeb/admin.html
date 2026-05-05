@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartFood Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <div class="logo">SmartFood Admin</div>
+    <div id="user-info" style="margin-left: 20px; font-weight: bold; color: #2ecc71;"></div>
+    <nav>
+      <div class="top-bar">
+          <div class="nav-controls" style="display: flex">
+            <div class="lang-switcher">
+                <button id="lang-uk" class="lang-btn" onclick="setAdminLanguage('uk')">UA</button>
+                <button id="lang-en" class="lang-btn" onclick="setAdminLanguage('en')">EN</button>
+            </div>
+              
+              <button id="logout-btn" onclick="handleLogout()" style="margin-left: 20px; background-color: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+                  <span data-t="logout">Вийти</span>
+              </button>
+          </div>
+      </div>
+    </nav>
+</header>
+
+<main>
+    <div class="tabs-container" style="padding: 20px; display: flex; gap: 10px; justify-content: center;">
+        <button id="btn-orders" onclick="showSection('orders')" class="tab-btn active" data-t="ordersTab">📋 Замовлення</button>
+        <button id="btn-menu" onclick="showSection('menu')" class="tab-btn" data-t="menuTab">🍔 Керування меню</button>
+    </div>
+
+    <section id="section-orders">
+        <div id="orders-container" class="orders-grid">
+        </div>
+    </section>
+
+    <section id="section-menu" style="display: none;">
+        <div id="admin-controls" style="padding: 10px; text-align: center;">
+            <button class="add-dish-btn" data-t="addDish" onclick="openModal()">➕ Додати нову страву</button>
+        </div>
+        <div id="admin-menu-list" class="menu-grid">
+        </div>
+    </section>
+
+    <div id="dish-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            
+            <h2 id="modal-title" data-t="addDish">Нова страва</h2>
+            
+            <input type="hidden" id="edit-dish-id">
+
+            <input type="text" id="new-dish-name" placeholder="Назва" required>
+            <input type="number" id="new-dish-price" placeholder="Ціна (від 1 грн)" min="1" required>
+            
+            <label for="new-dish-category" style="display: block; margin-top: 10px; font-weight: bold;" data-t="category">Категорія:</label>
+            <select id="new-dish-category" style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px;">
+                <option value="1">Напої</option>
+                <option value="2">Десерти</option>
+                <option value="3">Салати</option>
+            </select>
+
+            <textarea id="new-dish-desc" placeholder="Опис страв (інгредієнти, алергени)"></textarea>
+            
+            <button id="modal-save-btn" onclick="saveNewDish()" data-t="save">Зберегти</button>
+        </div>
+    </div>
+</main>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

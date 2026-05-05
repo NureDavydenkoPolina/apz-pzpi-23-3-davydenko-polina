@@ -1,1 +1,882 @@
-﻿
+﻿Харківський національний університет радіоелектроніки
+Факультет комп’ютерних наук
+Катедра програмної інженерії
+
+
+
+ЗВІТ
+до лабораторної роботи №3
+з дисципліни «Архітектура програмного забезпечення»
+
+
+
+
+Виконала
+ст. гр. ПЗПІ-23-3 
+Давиденко Поліна
+Перевірив
+ст. викладач катедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+Харків 2026
+1 ІСТОРІЯ ЗМІН
+№
+Дата
+Версія звіту
+Опис змін та виправлень
+1
+03.05.2026
+0.1
+Створено розділ «Завдання»
+2
+04.05.2026
+0.2
+Створено розділ «Опис Виконаної роботи»
+
+
+
+2 ЗАВДАННЯ
+	Метою даної лабораторної роботи є розробка front-end частини веб-застосунку для системи автоматизації ресторанного обслуговування SmartFood. Front-end повинен забезпечувати взаємодію користувачів із системою через веб-інтерфейс та підтримувати розмежування доступу відповідно до ролей користувачів.
+	У межах роботи необхідно реалізувати два окремі інтерфейси: користувацький інтерфейс для клієнтів, що дозволяє переглядати меню, формувати замовлення та взаємодіяти з кошиком, а також адміністративний інтерфейс для персоналу закладу (адміністратор, кухар, офіціант), який забезпечує управління замовленнями та меню. Також система повинна підтримувати інтернаціоналізацію та локалізацію інтерфейсу.
+
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+	У ході виконання роботи було розроблено front-end частину веб-застосунку SmartFood з використанням HTML, CSS та JavaScript. Архітектура клієнтської частини побудована за модульним підходом, де окремі файли відповідають за різні аспекти функціональності: взаємодію з API, логіку інтерфейсу, адміністрування та локалізацію.
+	Користувацький інтерфейс реалізовано у вигляді веб-сторінки меню, яка отримує список страв із серверної частини через REST API та відображає їх у вигляді карток. Кожна страва містить назву, опис та ціну, а також кнопку додавання до кошика. Кошик реалізовано як модальне вікно, що дозволяє змінювати кількість товарів, видаляти позиції та переглядати загальну суму замовлення. Дані кошика зберігаються у локальному сховищі браузера, що дозволяє зберігати стан між сесіями. Процес оформлення замовлення реалізовано через послідовні запити до серверної частини: спочатку створюється замовлення, після чого до нього додаються обрані страви. Взаємодія з сервером реалізована через універсальну функцію запитів, яка автоматично додає заголовки авторизації та обробляє помилки.
+	Для адміністративної частини створено окрему сторінку, доступ до якої здійснюється після проходження авторизації. Аутентифікація користувача відбувається шляхом введення email та пароля, після чого сервер повертає JWT-токен, який зберігається у localStorage і використовується для подальших запитів. Адміністративний інтерфейс підтримує рольову модель доступу. Залежно від ролі користувача (адміністратор, кухар або офіціант) змінюється доступний функціонал системи. Кухар та офіціант можуть змінювати статуси замовлень, а адміністратор має повний доступ до управління замовленнями та меню (створення нових страв, редагування існуючих та їх видалення). Для цього використовується модальне вікно з формою введення даних. Усі операції виконуються через відповідні API-запити до серверної частини.
+	Інтернаціоналізація реалізована шляхом використання словників перекладів для української та англійської мов. При зміні мови інтерфейсу динамічно оновлюються текстові елементи сторінки, а також назви та описи страв. Обрана мова зберігається у localStorage, що дозволяє зберігати налаштування користувача.
+	UML діаграма прецедентів відображає взаємодію користувачів із системою SmartFood відповідно до їх ролей. У системі визначено чотири типи акторів: Customer, Admin, Cook та Waiter. Користувач (Customer) має доступ до функцій перегляду меню, додавання страв до кошика, керування кошиком, перегляду замовлення та його оформлення. Адміністратор (Admin) виконує функції управління меню, перегляду замовлень, зміни їх статусів та видалення замовлень. Кухар (Cook) та офіціант (Waiter) взаємодіють із системою через перегляд замовлень та зміну їх статусів відповідно до бізнес-логіки системи. Усі актори мають доступ до функції зміни мови інтерфейсу.
+
+Рисунок 1 - UML діаграма прецедентів (Use Case Diagram)
+	Компонентна архітектура веб-застосунку SmartFood побудована за багаторівневим підходом, що включає клієнтський рівень, серверну частину та рівень бази даних. На клієнтському рівні реалізовано веб-інтерфейс користувача, який складається з двох основних частин: інтерфейсу для клієнта (Customer Web Interface) та адміністративного інтерфейсу (Admin Panel). Взаємодія клієнтського інтерфейсу із серверною частиною здійснюється через спеціальний модуль API Client, який реалізований у файлі api.js. Обмін даними відбувається за протоколом HTTP у форматі JSON. Серверна частина реалізована у вигляді REST API на основі Flask, яка обробляє запити клієнта, виконує бізнес-логіку та взаємодіє з базою даних. Рівень збереження даних представлений системою керування базами даних SQL Server, яка забезпечує зберігання інформації про користувачів, страви, замовлення та інші сутності системи.
+
+
+Рисунок 2 - UML діаграма компонент (Component Diagram)
+	UML діаграма пакетів відображає логічну структуру клієнтської частини веб-застосунку SmartFood та взаємозв’язки між його основними модулями. Архітектура побудована за принципом розділення відповідальностей.
+ Пакет ui містить компоненти інтерфейсу користувача - сторінки для клієнта та адміністратора. Пакет network відповідає за взаємодію з серверною частиною через API. Пакет utils реалізує допоміжні функції, зокрема інтернаціоналізацію, а пакет storage забезпечує збереження даних у браузері.
+
+
+Рисунок 3 - UML діаграма пакетів (Package Diagram)
+	
+	UML діаграма станів відображає життєвий цикл замовлення в системі SmartFood та переходи між його основними станами. Початковим станом є Created, який виникає після оформлення замовлення клієнтом. На цьому етапі замовлення стає доступним для персоналу. Після цього кухар розпочинає приготування, переводячи замовлення у стан Cooking. Після завершення приготування замовлення переходить у стан Ready, що означає готовність до видачі. Офіціант змінює стан замовлення на Delivered, завершуючи процес обслуговування клієнта. Діаграма також передбачає можливість повернення замовлення до початкового стану Created адміністратором у випадку необхідності корекції.
+
+Рисунок 4 - UML діаграма станів (State Diagram)
+
+ВИКОРИСТАННЯ ШІ ПІД ЧАС РОЗРОБКИ
+Назва інструменту та версія: модель GPT-5.3, план Go
+Мета використання: ШІ використовувався як допоміжний інструмент під час розробки front-end частини застосунку SmartFood. Зокрема для вирішення питань по JavaScript, роботі з API, організації коду, мультимовності та створення UML-діаграм.
+Внесок автора: Я самостійно написала HTML, CSS і основну логіку на JavaScript (меню, кошик, замовлення, адмінка). Також сама підключала бекенд, тестувала API і робила діаграми. ШІ використовувався для підказок, пояснень і перевірки.
+Використані запити
+1. Запит для структури фронтенду
+Запит до ШІ: я роблю веб-застосунок без React, просто HTML, CSS і JS. як краще розділити код по файлах? у мене буде меню, адмінка і робота з API.
+Результат: Було запропоновано розділити код на окремі файли: main.js для користувацького інтерфейсу, admin.js для адмінки, api.js для запитів і окремий файл для перекладів. 
+2. Запит для роботи з fetch
+Запит до ШІ: коротко різниця між async/await і обробка помилок.
+Додатковий запит: як передавати JSON у POST запиті?
+Результат: Я отримала приклади використання async/await, а також пояснення як працює fetch. 
+3. Запит для авторизації
+Запит до ШІ: як зберігати токен після логіну? і як його потім використовувати?
+Додатковий запит: чи нормально використовувати localStorage?
+Додатковий запит: як додавати токен в headers?
+Додатковий запит: що робити якщо токен неправильний?
+Результат: Було пояснено, що токен можна зберігати в localStorage і додавати в Authorization header. Також я додала обробку помилок і автоматичний logout.
+4. Запит для кошика
+Запит до ШІ: як краще зробити кошик у JS?
+Додатковий запит: як варто змінювати кількість товару?
+Результат: Було запропоновано використовувати масив об’єктів і зберігати його в localStorage. Я реалізувала логіку додавання і зміни кількості.
+5. Запит для рендеру меню
+Запит до ШІ: як відобразити список страв з бекенду на сторінці?
+Додатковий запит: чи можна використовувати innerHTML?
+Додатковий запит: як краще зробити кнопки для кожної страви?
+Результат: Було пояснено як працює map() і як генерувати HTML. Я зробила відображення карток страв.
+6. Запит для мультимовності
+Запит до ШІ: як зробити щоб можна було перемикати сайт з української на англійську і навпаки?
+Результат: Було запропоновано зробити словник перекладів і оновлювати текст через JS. Я зробила i18n.js.
+9. Запит для адмінки
+Запит до ШІ: як розділити ролі користувачів? у мене є admin, cook і waiter.
+Додатковий запит: де зберігати роль?
+Результат: Було запропоновано зберігати роль в localStorage і перевіряти її в коді. Я зробила різний функціонал для ролей.
+10. Запит для UML діаграм
+Запит до ШІ: я не розумію різницю між component diagram і package diagram. можеш пояснити просто?
+Результат: Було пояснено, що component diagram - це про архітектуру, а package - про структуру коду. 	
+
+4 ВИСНОВКИ
+	У результаті виконання лабораторної роботи було розроблено функціональну front-end частину веб-застосунку SmartFood, яка забезпечує зручну взаємодію користувачів із системою в режимі реального часу.
+	Було реалізовано два окремі інтерфейси: користувацький та адміністративний, що відповідає вимогам щодо розмежування доступу за ролями. Важливим результатом є реалізація інтернаціоналізації інтерфейсу, що забезпечує можливість використання системи різними користувачами незалежно від мови. Також було реалізовано механізм авторизації з використанням JWT-токенів, що підвищує безпеку доступу до адміністративної частини.
+
+5 ВИКОРИСТАНІ ДЖЕРЕЛА
+1. Fetch API - Web APIs | MDN. MDN Web Docs. URL: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API (date of access: 03.05.2026).
+2. JavaScript | MDN. MDN Web Docs. URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript (date of access: 03.05.2026).
+3. JSON Web Token Introduction - jwt.io. JSON Web Tokens - jwt.io. URL: https://www.jwt.io/introduction#what-is-json-web-token (date of access: 03.05.2026).
+
+
+ДОДАТОК А
+Відеозапис
+Відеозапис доповіді: https://youtu.be/q-l8h06kIOo
+Хронологічний опис відеозапису:
+00:00 – Представлення, вступ
+00:14 – Коротко про веб-застосунок SmartFood
+00:33 –  Пояснення діаграм
+02:00 – Пояснення коду основних файлів
+03:12 – Тестування клієнтської частини
+03:57 – Тестування адміністративної частини (кухаря)
+05:00 – Тестування адміністративної частини (офіціанта)
+05:29 – Тестування адміністративної частини (адміністратора)
+
+ДОДАТОК Б
+Приклади програмного коду
+	Б.1 Модуль взаємодії з API (api.js)
+1  const API_URL = "http://127.0.0.1:5000/api";
+2  
+3  async function apiRequest(endpoint, method = 'GET', body = null) {
+4      const token = localStorage.getItem('access_token');
+5      
+6      const headers = {
+7          'Content-Type': 'application/json'
+8      };
+9  
+10      if (token) {
+11          headers['Authorization'] = `Bearer ${token}`;
+12      }
+13  
+14      const config = {
+15          method,
+16          headers
+17      };
+18  
+19      if (body) {
+20          config.body = JSON.stringify(body);
+21      }
+22  
+23      try {
+24          const response = await fetch(`${API_URL}${endpoint}`, config);
+25  
+26          if (response.status === 401 || response.status === 422) {
+27              console.warn("Сесія завершена або доступ заборонено");
+28              handleLogoutSilently(); 
+29              return;
+30          }
+31  
+32          if (!response.ok) {
+33              const errorData = await response.json();
+34              throw new Error(errorData.error || `Помилка: ${response.status}`);
+35          }
+36  
+37          return await response.json();
+38      } catch (error) {
+39          console.error("API Error:", error);
+40          throw error;
+41      }
+42  }
+43  
+44  function handleLogoutSilently() {
+45      localStorage.removeItem('access_token');
+46      localStorage.removeItem('user_role_id');
+47      window.location.href = 'login.html';
+48  }
+49  
+50  async function getMenu() {
+51      return await apiRequest('/menu');
+52  }
+53  
+54  async function getOrdersByStatuses(statuses) {
+55      return await apiRequest(`/orders?statuses=${statuses.join(',')}`);
+56  }
+57  
+58  async function updateOrderStatus(orderId, newStatus) {
+59      return await apiRequest(`/order/${orderId}/status`, 'PUT', { status: newStatus });
+60  }
+61  
+62  async function apiDeleteOrder(orderId) {
+63      return await apiRequest(`/order/${orderId}`, 'DELETE');
+64  }
+65  
+66  async function apiCreateDish(dishData) {
+67      return await apiRequest('/admin/dish', 'POST', dishData);
+68  }
+69  
+70  async function apiUpdateDish(dishId, dishData) {
+71      return await apiRequest(`/admin/dish/${dishId}`, 'PUT', dishData);
+72  }
+73  
+74  async function apiDeleteDish(dishId) {
+75      return await apiRequest(`/admin/dish/${dishId}`, 'DELETE');
+76  }
+77  
+78  async function sendOrderToBackend(cartItems, tableId) {
+79      const orderData = await apiRequest('/order/create', 'POST', { table_id: tableId });
+80      const orderId = orderData.order_id;
+81  
+82      for (const item of cartItems) {
+83          await apiRequest(`/order/${orderId}/add-item`, 'POST', {
+84              dish_id: item.dish_id,
+85              quantity: item.quantity
+86          });
+87      }
+88      return orderId;
+89  }
+90  
+	
+	
+
+
+	Б.2 Модуль користувацького інтерфейсу (main.js)
+1 if (typeof currentLang === 'undefined') {
+2     window.currentLang = localStorage.getItem('smartfood_lang') || 'uk';
+3 } else {
+4     currentLang = localStorage.getItem('smartfood_lang') || 'uk';
+5 }
+6 
+7 window.cart = JSON.parse(localStorage.getItem('smartfood_cart')) || [];
+8 window.allDishes = []; 
+9 
+10 async function initApp() {
+11     if (typeof translations === 'undefined') {
+12         setTimeout(initApp, 50); 
+13         return;
+14     }
+15 
+16     try {
+17         const dishes = await getMenu();
+18         window.allDishes = dishes; 
+19         
+20         renderMenu(dishes);
+21         updateInterface();
+22         updateCartUI();
+23         
+24         const activeBtn = document.getElementById(`lang-${currentLang}`);
+25         if (activeBtn) activeBtn.classList.add('active');
+26         
+27     } catch (err) {
+28         console.error("Помилка ініціалізації:", err);
+29     }
+30 }
+31 
+32 function renderMenu(dishes) {
+33     const container = document.getElementById('menu-container');
+34     if (!container || !translations[currentLang]) return;
+35     
+36     const t = translations[currentLang];
+37 
+38     container.innerHTML = dishes.map(dish => {
+39         let displayName = dish.dish_name;
+40         let displayDesc = dish.description || '';
+41 
+42         if (currentLang === 'en' && typeof dishTranslations !== 'undefined' && dishTranslations[dish.dish_name]) {
+43             displayName = dishTranslations[dish.dish_name].en;
+44             displayDesc = dishTranslations[dish.dish_name].descEn;
+45         }
+46 
+47         return `
+48             <div class="dish-card">
+49                 <h3>${displayName}</h3>
+50                 <p>${displayDesc}</p>
+51                 <span class="dish-price">${dish.price} ${t.currency}</span>
+52                 <br><br>
+53                 <button onclick="addToCart(${dish.dish_id}, '${displayName.replace(/'/g, "\\'")}', ${dish.price})">
+54                     ${t.addBtn}
+55                 </button>
+56             </div>
+57         `;
+58     }).join('');
+59 }
+60 
+61 function updateInterface() {
+62     if (typeof translations === 'undefined' || !translations[currentLang]) return;
+63     const t = translations[currentLang];
+64     
+65     const elements = {
+66         'page-title': t.title,
+67         'cart-title': t.cartTitle,
+68         'checkout-btn': t.checkout,
+69         'total-label': t.total
+70     };
+71 
+72     for (let id in elements) {
+73         const el = document.getElementById(id);
+74         if (el) el.innerText = elements[id];
+75     }
+76     
+77     document.querySelectorAll('.curr').forEach(span => {
+78         span.innerText = t.currency;
+79     });
+80 }
+81 
+82 function addToCart(dishId, name, price) {
+83     const existing = window.cart.find(item => item.dish_id === dishId);
+84     if (existing) {
+85         existing.quantity += 1;
+86     } else {
+87         window.cart.push({ dish_id: dishId, name: name, price: price, quantity: 1 });
+88     }
+89     saveAndRender();
+90 }
+91 
+92 function removeFromCart(dishId) {
+93     window.cart = window.cart.filter(item => item.dish_id !== dishId);
+94     saveAndRender();
+95 }
+96 
+97 function saveAndRender() {
+98     localStorage.setItem('smartfood_cart', JSON.stringify(window.cart));
+99     updateCartUI();
+100 }
+101 
+102 function updateQuantity(dishId, delta) {
+103     const item = window.cart.find(item => item.dish_id === dishId);
+104     if (item) {
+105         const newQuantity = item.quantity + delta;
+106         if (newQuantity <= 0) {
+107             removeFromCart(dishId);
+108         } else if (newQuantity <= 10) {
+109             item.quantity = newQuantity;
+110             saveAndRender();
+111         }
+112     }
+113 }
+114 
+115 function updateCartUI() {
+116     if (typeof translations === 'undefined' || !translations[currentLang]) return;
+117 
+118     const t = translations[currentLang];
+119     const itemsContainer = document.getElementById('cart-items');
+120     const totalSpan = document.getElementById('cart-total');
+121     const cartBtn = document.getElementById('cart-btn');
+122     
+123     if (!itemsContainer || !cartBtn) return;
+124 
+125     const count = window.cart.reduce((sum, item) => sum + item.quantity, 0);
+126     cartBtn.innerText = `🛒 ${t.cart} (${count})`;
+127 
+128     if (window.cart.length === 0) {
+129         itemsContainer.innerHTML = `<p>${t.empty}</p>`;
+130     } else {
+131         itemsContainer.innerHTML = window.cart.map(item => {
+132             let displayName = item.name;
+133             if (currentLang === 'en' && typeof dishTranslations !== 'undefined' && dishTranslations[item.name]) {
+134                 displayName = dishTranslations[item.name].en;
+135             }
+136 
+137             return `
+138                 <div class="cart-item">
+139                     <div class="item-info">
+140                         <span>${displayName}</span>
+141                         <div class="quantity-controls">
+142                             <button onclick="updateQuantity(${item.dish_id}, -1)">-</button>
+143                             <span class="qty-num">${item.quantity}</span>
+144                             <button onclick="updateQuantity(${item.dish_id}, 1)">+</button>
+145                         </div>
+146                     </div>
+147                     <span>${(item.price * item.quantity).toFixed(2)} ${t.currency}</span>
+148                     <button class="remove-btn" onclick="removeFromCart(${item.dish_id})">×</button>
+149                 </div>
+150             `;
+151         }).join('');
+152     }
+153 
+154     const total = window.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+155     if (totalSpan) totalSpan.innerText = total.toFixed(2);
+156 }
+157 
+158 function setLanguage(lang) {
+159     currentLang = lang;
+160     localStorage.setItem('smartfood_lang', lang);
+161 
+162     document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+163     const activeBtn = document.getElementById(`lang-${lang}`);
+164     if (activeBtn) activeBtn.classList.add('active');
+165 
+166     updateInterface();
+167     updateCartUI();
+168 
+169     if (window.allDishes && window.allDishes.length > 0) {
+170         renderMenu(window.allDishes);
+171     }
+172 }
+173 
+174 function toggleCart() {
+175     const modal = document.getElementById('cart-modal');
+176     if (modal) {
+177         modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+178         updateCartUI();
+179     }
+180 }
+181 
+182 window.onload = initApp;
+183 
+184 const checkoutBtn = document.getElementById('checkout-btn');
+185 if (checkoutBtn) {
+186     checkoutBtn.onclick = async function() {
+187         if (window.cart.length === 0) return;
+188         try {
+189             const orderId = await sendOrderToBackend(window.cart, 1);
+190             alert(currentLang === 'uk' ? `Замовлення №${orderId} прийнято!` : `Order #${orderId} placed!`);
+191             window.cart = [];
+192             localStorage.removeItem('smartfood_cart');
+193             toggleCart();
+194             updateCartUI();
+195         } catch (err) {
+196             console.error(err);
+197             alert("Помилка при відправці замовлення!");
+198         }
+199     };
+200 }	
+	
+
+
+	Б.3 Модуль адміністративної логіки (admin.js)
+1 let currentRole = '';
+2 let currentAdminLang = localStorage.getItem('admin_lang') || 'uk';
+3 
+4 const roleMap = {
+5     1: 'admin',
+6     2: 'waiter',
+7     3: 'cook'
+8 };
+9 
+10 const rolePermissions = {
+11     cook: ['created', 'cooking', 'ready'],
+12     waiter: ['ready', 'delivered'],
+13     admin: ['created', 'cooking', 'ready', 'delivered']
+14 };
+15 
+16 async function initAdmin() {
+17     const roleId = localStorage.getItem('user_role_id');
+18     const token = localStorage.getItem('access_token');
+19 
+20     if (!token || !roleId) {
+21         window.location.href = 'login.html';
+22         return;
+23     }
+24 
+25     currentRole = roleMap[roleId];
+26 
+27     const userInfo = document.getElementById('user-info');
+28     if (userInfo && currentRole) {
+29         userInfo.innerText = currentRole.toUpperCase();
+30     }
+31 
+32     const adminControls = document.getElementById('admin-controls');
+33     if (adminControls) {
+34         adminControls.style.display = currentRole === 'admin' ? 'block' : 'none';
+35     }
+36     
+37     const menuManagement = document.getElementById('menu-management');
+38     if (currentRole === 'admin') {
+39         if (menuManagement) {
+40             menuManagement.style.display = 'block';
+41         }
+42         await loadAdminMenu();
+43     }
+44 
+45     setAdminLanguage(currentAdminLang);
+46 }
+47 
+48 function setAdminLanguage(lang) {
+49     currentAdminLang = lang;
+50     localStorage.setItem('admin_lang', lang);
+51     
+52     document.querySelectorAll('.lang-btn').forEach(btn => {
+53         btn.classList.remove('active');
+54     });
+55     
+56     const activeBtn = document.getElementById(`lang-${lang}`);
+57     if (activeBtn) activeBtn.classList.add('active');
+58 
+59     if (typeof adminTranslations !== 'undefined' && adminTranslations[lang]) {
+60         const t = adminTranslations[lang];
+61         document.querySelectorAll('[data-t]').forEach(el => {
+62             const key = el.getAttribute('data-t');
+63             if (t[key]) el.innerText = t[key];
+64         });
+65         
+66         if (t.title) document.title = t.title;
+67     }
+68     
+69     refreshOrders();
+70     if (currentRole === 'admin') loadAdminMenu();
+71 }
+72 
+73 async function refreshOrders() {
+74     const container = document.getElementById('orders-container');
+75     if (!container) return;
+76 
+77     try {
+78         const statuses = rolePermissions[currentRole] || [];
+79         if (statuses.length === 0) return;
+80 
+81         let orders = await getOrdersByStatuses(statuses);
+82 
+83         if (orders && orders.length > 0) {
+84             orders.reverse(); 
+85         }
+86 
+87         renderOrders(orders);
+88         
+89     } catch (err) {
+90         console.error("Помилка завантаження замовлень:", err);
+91         container.innerHTML = `<p style="color:red;">Помилка з'єднання з сервером</p>`;
+92     }
+93 }
+94 
+95 function renderOrders(orders) {
+96     const container = document.getElementById('orders-container');
+97     const lang = (typeof adminTranslations !== 'undefined') ? adminTranslations[currentAdminLang] : {};
+98 
+99     if (!container) return;
+100     if (!orders || orders.length === 0) {
+101         container.innerHTML = `<p>${lang.noOrders || 'Замовлень немає'}</p>`;
+102         return;
+103     }
+104 
+105     container.innerHTML = '';
+106 
+107     orders.forEach((order) => {
+108         const orderCard = document.createElement('div');
+109         orderCard.className = `order-card status-${order.status}`;
+110         orderCard.id = `order-${order.order_id}`;
+111         
+112         const itemsHtml = order.items.map(item => {
+113             let displayName = item.dish_name;
+114             if (currentAdminLang === 'en' && typeof dishTranslations !== 'undefined' && dishTranslations[item.dish_name]) {
+115                 displayName = dishTranslations[item.dish_name].en;
+116             }
+117             return `<div><strong>${displayName}</strong> x${item.quantity}</div>`;
+118         }).join('');
+119 
+120         orderCard.innerHTML = `
+121             <h4>${lang.order || 'Order'} #${order.order_id} (${lang.table || 'Table'} ${order.table_number})</h4>
+122             <div class="items-list">${itemsHtml}</div>
+123             <p><strong>${lang.total || 'Сума'}:</strong> <span>${order.total_price || 0}</span> ₴</p>
+124             <p>${lang.status || 'Status'}: <span class="status-badge">${order.status}</span></p>
+125             <div class="actions">${generateActionButtons(order)}</div>
+126         `;
+127 
+128         container.appendChild(orderCard);
+129     });
+130 }
+131 
+132 function generateActionButtons(order) {
+133     const s = order.status;
+134     const t = (typeof adminTranslations !== 'undefined') ? adminTranslations[currentAdminLang] : {};
+135 
+136     if (currentRole === 'cook') {
+137         if (s === 'created') return `<button onclick="changeStatus(${order.order_id}, 'cooking')">${t.cookAction || 'Start'}</button>`;
+138         if (s === 'cooking') return `<button onclick="changeStatus(${order.order_id}, 'ready')">${t.readyAction || 'Ready'}</button>`;
+139     }
+140     
+141     if (currentRole === 'waiter') {
+142         if (s === 'ready') return `<button onclick="changeStatus(${order.order_id}, 'delivered')">${t.deliverAction || 'Deliver'}</button>`;
+143     }
+144 
+145     if (currentRole === 'admin') {
+146         return `
+147             <button class="btn-reset" onclick="changeStatus(${order.order_id}, 'created')">
+148                 ${t.reset || '🔄 Reset'}
+149             </button>
+150             <button class="btn-delete" onclick="deleteOrder(${order.order_id})">
+151                 ${t.delete || '🗑 Delete'}
+152             </button>
+153         `;
+154     }
+155     return ''; 
+156 }
+157 
+158 async function changeStatus(orderId, nextStatus) {
+159     try {
+160         await updateOrderStatus(orderId, nextStatus);
+161         refreshOrders();
+162     } catch (err) {
+163         alert("Помилка зміни статусу");
+164     }
+165 }
+166 
+167 async function deleteOrder(orderId) {
+168     if (!confirm("Видалити замовлення?")) return;
+169     try {
+170         await apiDeleteOrder(orderId);
+171         refreshOrders();
+172     } catch (err) {
+173         alert("Помилка видалення");
+174     }
+175 }
+176 
+177 function openModal() { 
+178     document.getElementById('dish-modal').style.display = 'block'; 
+179 }
+180 
+181 function closeModal() { 
+182     document.getElementById('dish-modal').style.display = 'none';
+183     
+184     document.getElementById('modal-title').innerText = currentAdminLang === 'uk' ? "Нова страва" : "New Dish";
+185     document.getElementById('edit-dish-id').value = '';
+186     document.getElementById('new-dish-name').value = '';
+187     document.getElementById('new-dish-price').value = '';
+188     document.getElementById('new-dish-desc').value = '';
+189     
+190     const saveBtn = document.getElementById('modal-save-btn');
+191     saveBtn.innerText = currentAdminLang === 'uk' ? "Зберегти" : "Save";
+192     saveBtn.onclick = saveNewDish;
+193 }
+194 
+195 async function saveNewDish() {
+196     const data = {
+197         dish_name: document.getElementById('new-dish-name').value,
+198         price: Number(document.getElementById('new-dish-price').value),
+199         description: document.getElementById('new-dish-desc').value,
+200         category_id: Number(document.getElementById('new-dish-category').value)
+201     };
+202 
+203     if (!data.dish_name || data.price < 1) {
+204         alert("Заповніть назву та ціну!");
+205         return;
+206     }
+207 
+208     try {
+209             await apiCreateDish(data);
+210             alert("Додано!");
+211             closeModal();
+212             loadAdminMenu();
+213         } catch (err) {
+214             alert("Помилка: " + err.message);
+215         }
+216 }
+217 
+218 function handleLogout() {
+219     const lang = (typeof adminTranslations !== 'undefined') ? adminTranslations[currentAdminLang] : {};
+220     const confirmMsg = lang.logoutConfirm || "Ви впевнені, що хочете вийти?";
+221 
+222     if (confirm(confirmMsg)) {
+223         localStorage.removeItem('access_token');
+224         localStorage.removeItem('user_role_id');
+225         localStorage.removeItem('admin_lang');
+226 
+227         window.location.href = 'login.html';
+228     }
+229 }
+230 
+231 async function loadAdminMenu() {
+232     const container = document.getElementById('admin-menu-list');
+233     try {
+234         const dishes = await getMenu();
+235         container.innerHTML = dishes.map(dish => `
+236             <div class="dish-card admin-edit-card">
+237                 <div class="item-info">
+238                     <h4>${dish.dish_name}</h4>
+239                     <p><strong>${dish.price} ₴</strong></p>
+240                     <small>${dish.description || ''}</small>
+241                 </div>
+242                 <div class="admin-actions">
+243                     <button onclick='prepareEditDish(${JSON.stringify(dish)})' class="edit-btn">✏️</button>
+244                     <button onclick="deleteDishConfirm(${dish.dish_id})" class="delete-btn">🗑</button>
+245                 </div>
+246             </div>
+247         `).join('');
+248     } catch (err) {
+249         console.error("Помилка:", err);
+250     }
+251 }
+252 
+253 async function deleteDishConfirm(dish_id) {
+254     if (!confirm("Ви впевнені?")) return;
+255     try {
+256         await apiDeleteDish(dish_id);
+257         loadAdminMenu();
+258     } catch (err) {
+259         alert("Помилка видалення");
+260     }
+261 }
+262 
+263 async function editDishPrompt(id, oldName, oldPrice, oldDesc, oldCat) {
+264     const newName = prompt("Нова назва:", oldName);
+265     const newPrice = prompt("Нова ціна:", oldPrice);
+266     if (!newName || !newPrice) return;
+267 
+268     const token = localStorage.getItem('access_token');
+269     try {
+270         const response = await fetch(`http://127.0.0.1:5000/api/admin/dish/${id}`, {
+271             method: 'PUT',
+272             headers: { 
+273                 'Content-Type': 'application/json',
+274                 'Authorization': `Bearer ${token}` 
+275             },
+276             body: JSON.stringify({
+277                 dish_name: newName,
+278                 price: Number(newPrice),
+279                 description: oldDesc,
+280                 category_id: oldCat
+281             })
+282         });
+283 
+284         if (response.ok) {
+285             alert("Оновлено!");
+286             loadAdminMenu();
+287         }
+288     } catch (err) {
+289         alert("Помилка при оновленні");
+290     }
+291 }
+292 
+293 function showSection(sectionName) {
+294     const ordersSection = document.getElementById('section-orders');
+295     const menuSection = document.getElementById('section-menu');
+296     const btnOrders = document.getElementById('btn-orders');
+297     const btnMenu = document.getElementById('btn-menu');
+298 
+299     if (sectionName === 'menu') {
+300         ordersSection.style.display = 'none';
+301         menuSection.style.display = 'block';
+302         
+303         btnMenu.classList.add('active');
+304         btnOrders.classList.remove('active');
+305         
+306         loadAdminMenu();
+307     } else {
+308         ordersSection.style.display = 'block';
+309         menuSection.style.display = 'none';
+310         
+311         btnOrders.classList.add('active');
+312         btnMenu.classList.remove('active');
+313         
+314         refreshOrders();
+315     }
+316 }
+317 
+318 function prepareEditDish(dish) {
+319   
+320     const modal = document.getElementById('dish-modal');
+321     
+322     document.getElementById('edit-dish-id').value = dish.dish_id;
+323     document.getElementById('new-dish-name').value = dish.dish_name;
+324     document.getElementById('new-dish-price').value = dish.price;
+325     document.getElementById('new-dish-desc').value = dish.description || "";
+326 
+327     const categorySelect = document.getElementById('new-dish-category');
+328     
+329     categorySelect.value = dish.category_id; 
+330 
+331     if (categorySelect.selectedIndex === -1) {
+332         console.warn("Категорія ID " + dish.category_id + " не знайдена у списку!");
+333         categorySelect.selectedIndex = 0; 
+334     }
+335 
+336     document.getElementById('modal-title').innerText = "Редагування: " + dish.dish_name;
+337     const saveBtn = document.getElementById('modal-save-btn');
+338     saveBtn.innerText = "Оновити";
+339     saveBtn.onclick = updateDish;
+340 
+341     modal.style.display = 'block';
+342 }
+343 
+344 async function updateDish() {
+345     const dishId = document.getElementById('edit-dish-id').value;
+346     const data = {
+347         dish_name: document.getElementById('new-dish-name').value,
+348         price: Number(document.getElementById('new-dish-price').value),
+349         description: document.getElementById('new-dish-desc').value,
+350         category_id: Number(document.getElementById('new-dish-category').value)
+351     };
+352 
+353     try {
+354         await apiUpdateDish(dishId, data); 
+355 
+356         alert(currentAdminLang === 'uk' ? "Оновлено успішно!" : "Updated successfully!");
+357         closeModal();
+358         loadAdminMenu(); 
+359     } catch (err) {
+360         alert("Помилка: " + err.message);
+361     }
+362 }
+364 window.onload = initAdmin;
+	Б.4 Модуль інтернаціоналізації (i18n.js)
+1 const translations = {
+2     uk: {
+3         title: "Наше Меню", currency: "₴", addBtn: "Додати", loading: "Завантаження...",
+4         cart: "Кошик", cartTitle: "Ваш кошик", total: "Разом", checkout: "Оформити", empty: "Кошик порожній"
+5     },
+6     en: {
+7         title: "Our Menu", currency: "$", addBtn: "Add", loading: "Loading...",
+8         cart: "Cart", cartTitle: "Your Cart", total: "Total", checkout: "Checkout", empty: "Cart is empty"
+9     }
+10 };
+11 
+12 const dishTranslations = {
+13     "Капучіно": { en: "Cappuccino", descEn: "Espresso with milk foam" },
+14     "Американо": { en: "Americano", descEn: "Black coffee" },
+15     "Чізкейк": { en: "Cheesecake", descEn: "Sweet cheese dessert" },
+16     "Цезар": { en: "Caesar Salad", descEn: "Salad with chicken and Caesar sauce" },
+17     "Цезар з креветкою": { en: "Prawn Caesar", descEn: "Classic Caesar with prawns" }
+18 };
+19 
+20 const adminTranslations = {
+21     uk: {
+22         title: "SmartFood - Адмін",
+23         addDish: "➕ Додати нову страву",
+24         order: "Замовлення",
+25         table: "Стіл",
+26         status: "Статус",
+27         noOrders: "Поки що активних замовлень немає.",
+28         save: "Зберегти",
+29         update: "Оновити",
+30         cookAction: "👨‍🍳 Почати готувати",
+31         readyAction: "✅ Готово",
+32         deliverAction: "🏃 Подати",
+33         logout: "Вийти",
+34         logoutConfirm: "Ви впевнені, що хочете вийти?",
+35         ordersTab: "📋 Замовлення",
+36         menuTab: "🍔 Керування меню",
+37         manageMenu: "Керування меню",
+38         editDish: "Редагувати страву",
+39         deleteConfirm: "Ви впевнені, що хочете видалити цю страву?",
+40         category: "Категорія",
+41         description: "Опис",
+42         price: "Ціна",
+43         total: "Сума",
+44         reset: "🔄 Скинути",
+45         delete: "🗑 Видалити",
+46         deleteOrderConfirm: "Видалити замовлення?"
+47     },
+48     en: {
+49         title: "SmartFood Admin",
+50         addDish: "➕ Add New Dish",
+51         order: "Order",
+52         table: "Table",
+53         status: "Status",
+54         noOrders: "No active orders for now.",
+55         save: "Save",
+56         update: "Update",
+57         cookAction: "👨‍🍳 Start Cooking",
+58         readyAction: "✅ Ready",
+59         deliverAction: "🏃 Deliver",
+60         logout: "Logout",
+61         logoutConfirm: "Are you sure you want to logout?",
+62         ordersTab: "📋 Orders",
+63         menuTab: "🍔 Manage Menu",
+64         manageMenu: "Menu Management",
+65         editDish: "Edit Dish",
+66         deleteConfirm: "Are you sure you want to delete this dish?",
+67         category: "Category",
+68         description: "Description",
+69         price: "Price",
+70         total: "Total",
+71         reset: "🔄 Reset",
+72         delete: "🗑 Delete",
+73         deleteOrderConfirm: "Delete this order?"
+74     }
+75 };
+76 
+77 let currentLang = localStorage.getItem('lang') || 'uk';
+78 
+79 function changeLanguage(lang) {
+80     currentLang = lang;
+81     localStorage.setItem('lang', lang);
+82     
+83     updateInterface();
+84     
+85     if (window.allDishes) {
+86         renderMenu(window.allDishes);
+87     }
+88     updateCartUI();
+89 }

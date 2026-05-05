@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFood - Menu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">SmartFood</div>
+        <nav style="display: flex; gap: 20px;">
+          <button id="cart-btn" onclick="toggleCart()">🛒 Кошик (0)</button>
+          <div class="lang-switcher">
+              <button id="lang-uk" class="lang-btn" onclick="setLanguage('uk')">UA</button>
+              <button id="lang-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
+          </div>
+        </nav>
+    </header>
+
+    <main>
+        <h1 id="page-title" style="padding-inline: 50px;">Наше Меню</h1>
+        <div id="menu-container" class="menu-grid">
+            <p class="loading">Завантаження страв...</p>
+        </div>
+    </main>
+    
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="toggleCart()">&times;</span>
+            <h2 id="cart-title">Ваш кошик</h2>
+            <div id="cart-items"></div>
+            <hr>
+            <p><strong><span id="total-label">Разом</span>: <span id="cart-total">0</span> <span class="curr">₴</span></strong></p>
+            <button id="checkout-btn">Оформити замовлення</button>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

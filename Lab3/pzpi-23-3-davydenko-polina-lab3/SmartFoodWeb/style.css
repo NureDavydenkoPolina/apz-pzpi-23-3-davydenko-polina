@@ -1,0 +1,291 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: #f8f9fa;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 50px;
+    background: #333;
+    color: white;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 40px 50px;
+}
+
+.dish-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.dish-card:hover {
+    transform: translateY(-5px);
+}
+
+.dish-price {
+    color: #27ae60;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+button {
+    cursor: pointer;
+    padding: 5px 10px;
+    margin-left: 5px;
+}
+
+.modal {
+    display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+    width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+    background-color: white; margin: 10% auto; padding: 20px;
+    width: 400px; border-radius: 15px; position: relative;
+}
+.close { position: absolute; right: 20px; top: 10px; font-size: 28px; cursor: pointer; }
+
+.cart-item {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;
+}
+.remove-btn { color: red; border: none; background: none; font-weight: bold; }
+
+button:active {
+    background-color: #555;
+    color: white;
+}
+
+.quantity-controls {
+    display: inline-flex;
+    align-items: center;
+    background: #eee;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+.quantity-controls button {
+    background: none;
+    border: none;
+    padding: 2px 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.qty-num {
+    margin: 0 5px;
+    min-width: 20px;
+    text-align: center;
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-card {
+    background: #fff;
+    border-left: 5px solid #3498db;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+}
+
+.admin-only {
+    background: #fdf2f2;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px dashed red;
+}
+
+.actions button {
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8em;
+}
+
+.status-created { border-left: 5px solid #f1c40f; }
+.status-cooking { border-left: 5px solid #e67e22; }
+.status-ready   { border-left: 5px solid #2ecc71; }
+.status-delivered { border-left: 5px solid #95a5a6; opacity: 0.7; }
+
+.items-list {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f9;
+    margin: 0;
+}
+
+.login-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.login-container button:hover {
+    background-color: #219150;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 350px;
+    position: relative;
+}
+
+.modal-content input, .modal-content textarea {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.close {
+    position: absolute;
+    right: 20px; top: 10px;
+    font-size: 28px; cursor: pointer;
+}
+
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 400px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    position: relative;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content input, 
+.modal-content textarea, 
+.modal-content select {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.lang-switcher {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1); /* Скляний ефект */
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    gap: 5px;
+}
+
+.lang-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.6;
+}
+
+.lang-btn:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.lang-btn.active {
+    background: #2ecc71;
+    color: white;
+    opacity: 1;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+    transform: translateY(-1px);
+}
+
+.lang-btn:active {
+    transform: scale(0.95);
+}

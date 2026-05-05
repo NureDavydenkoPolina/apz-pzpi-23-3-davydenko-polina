@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartFood - Вхід</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <h2>Вхід до системи</h2>
+        <input type="email" id="email" placeholder="Email (cook@smartfood.com)" required>
+        <input type="password" id="password" placeholder="Пароль" required>
+        <button id="login-btn">Увійти</button>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('login-btn').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('access_token', data.access_token);
+                    
+                    const payload = JSON.parse(atob(data.access_token.split('.')[1]));
+                    const userData = JSON.parse(payload.sub);
+                    
+                    localStorage.setItem('user_role_id', userData.role);
+                    
+                    window.location.href = 'admin.html';
+                } else {
+                    alert("Помилка авторизації. Перевірте пошту та пароль.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Не вдалося з'єднатися з сервером. Перевір, чи працює Flask.");
+            }
+        });
+    </script>
+</body>
+</html>
