@@ -1,0 +1,455 @@
+swagger: "2.0"
+info:
+  title: SmartFood API
+  version: "1.0.0"
+  description: REST API системи SmartFood
+
+tags:
+  - name: Admin
+    description: Ендпоінти для адміністратора системи
+
+host: "127.0.0.1:5000"
+schemes:
+  - http
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+
+paths:
+
+  /api/menu:
+    get:
+      tags: [Menu]
+      summary: Отримання списку страв меню
+      responses:
+        200:
+          description: Успішне отримання меню
+
+  /api/order/create:
+    post:
+      tags: [Order]
+      summary: Створення нового замовлення (доступно без авторизації)
+      parameters:
+        - in: body
+          name: table
+          required: true
+          schema:
+            type: object
+            properties:
+              table_id:
+                type: integer
+                example: 4
+      responses:
+        200:
+          description: Замовлення створено
+
+  /api/order/{order_id}:
+    get:
+      tags: [Order]
+      summary: Перегляд замовлення (для клієнта без авторизації)
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Інформація про замовлення
+
+  /api/order/{order_id}/add-item:
+    post:
+      tags: [Order Items]
+      summary: Додавання страви до замовлення (доступно клієнту)
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: item
+          required: true
+          schema:
+            type: object
+            properties:
+              dish_id:
+                type: integer
+                example: 3
+              quantity:
+                type: integer
+                example: 2
+      responses:
+        200:
+          description: Позицію додано
+
+  /api/order/{order_id}/items:
+    get:
+      tags: [Order Items]
+      summary: Перегляд позицій замовлення (доступно клієнту)
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Список позицій замовлення
+
+  /api/order/{order_id}/status:
+    put:
+      security:
+        - Bearer: []  
+      tags: [Order]
+      summary: Оновлення статусу (потрібна авторизація)
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: status
+          required: true
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "ready"
+      responses:
+        200:
+          description: Статус оновлено
+        401:
+          description: Немає токена
+        403:
+          description: Недостатньо прав
+
+  /api/order/{order_id}/total:
+    get:
+      tags: [Order]
+      summary: Отримання загальної суми замовлення (доступно клієнту)
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Загальна сума
+
+  /api/order/{order_id}/delete-item:
+    delete:
+      tags: [Order Items]
+      summary: Видалення позиції страви (доступно клієнту)
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: item
+          required: true
+          schema:
+            type: object
+            properties:
+              dish_id:
+                type: integer
+                example: 3
+      responses:
+        200:
+          description: Позицію видалено
+
+  /api/login:
+    post:
+      tags:
+        - Auth
+      summary: Авторизація користувача та отримання токена
+      parameters:
+        - in: body
+          name: credentials
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                example: "admin@smartfood.com"
+              password:
+                type: string
+                example: "admin123"
+      responses:
+        200:
+          description: Успішна авторизація
+        401:
+          description: Невірні дані входу
+
+  /api/admin/dish:
+    post:
+      tags: [Admin]
+      summary: Створення нової страви (ADMIN)
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: dish
+          required: true
+          schema:
+            type: object
+            properties:
+              dish_name:
+                type: string
+                example: Борщ
+              description:
+                type: string
+                example: Традиційний український борщ
+              price:
+                type: number
+                example: 120
+              category_id:
+                type: integer
+                example: 1
+      responses:
+        200:
+          description: Страву додано
+
+  /api/admin/dish/{dish_id}:
+    put:
+      tags: [Admin]
+      summary: Оновлення страви (ADMIN)
+      security:
+        - Bearer: []
+      parameters:
+        - name: dish_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: dish
+          schema:
+            type: object
+            properties:
+              dish_name:
+                type: string
+              description:
+                type: string
+              price:
+                type: number
+              category_id:
+                type: integer
+      responses:
+        200:
+          description: Страву оновлено
+
+    delete:
+      tags: [Admin]
+      summary: Видалення страви (ADMIN)
+      security:
+        - Bearer: []
+      parameters:
+        - name: dish_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Страву видалено
+
+  /api/admin/users:
+    get:
+      tags: [Admin]
+      summary: Перегляд усіх користувачів (ADMIN)
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: Успішне отримання списку користувачів
+
+    post:
+      tags: [Admin]
+      summary: Створення нового користувача (ADMIN)
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: user
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Олег
+              email:
+                type: string
+                example: oleg@gmail.com
+              phone:
+                type: string
+                example: "+380123456789"
+              password:
+                type: string
+                example: "123456"
+              role_id:
+                type: integer
+                example: 2
+      responses:
+        200:
+          description: Користувача створено
+
+  /api/admin/users/{user_id}:
+    delete:
+      tags: [Admin]
+      summary: Видалення користувача (ADMIN)
+      security:
+        - Bearer: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Користувача видалено
+
+  /api/admin/orders:
+    get:
+      tags: [Admin]
+      summary: Перегляд усіх замовлень (ADMIN)
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: Успішне отримання замовлень
+
+  /api/admin/users/{user_id}/role:
+    put:
+      tags: [Admin]
+      summary: Призначити роль користувачу (ADMIN)
+      security:
+        - Bearer: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: role
+          required: true
+          schema:
+            type: object
+            properties:
+              role_id:
+                type: integer
+                example: 2
+      responses:
+        200:
+          description: Роль успішно оновлено
+
+  /api/admin/stats/top-dishes:
+    get:
+      tags: [Admin]
+      summary: Топ проданих страв (рахуються лише delivered замовлення)
+      description: >
+        Повертає статистику по стравах, які були фактично доставлені клієнтам.
+        У розрахунку враховуються лише ті позиції, де замовлення має статус "delivered".
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: Успішне отримання статистики продажів
+          examples:
+            application/json:
+              - dish_name: "Капучіно"
+                total_sold: 12
+                total_income: 840.0
+              - dish_name: "Піцца Маргарита"
+                total_sold: 5
+                total_income: 1500.0
+
+  /api/table/{table_id}/active-order:
+    get:
+      tags: [Table]
+      summary: Отримати активне замовлення для столика (status=created)
+      parameters:
+        - name: table_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Активне замовлення знайдено
+          schema:
+            type: object
+            properties:
+              order_id:
+                type: integer
+                example: 12
+              table_id:
+                type: integer
+                example: 3
+              status:
+                type: string
+                example: created
+              total_price:
+                type: number
+                example: 250.0
+              created_at:
+                type: string
+                example: "2025-12-21T12:34:56"
+        404:
+          description: Активне замовлення не знайдено
+
+  /api/order/{order_id}/items-expanded:
+    get:
+      tags: [Order Items]
+      summary: Перегляд позицій замовлення з назвами страв (expanded)
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Список позицій замовлення (expanded)
+          schema:
+            type: object
+            properties:
+              order_id:
+                type: integer
+                example: 12
+              table_id:
+                type: integer
+                example: 3
+              status:
+                type: string
+                example: created
+              total_price:
+                type: number
+                example: 250.0
+              items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    dish_id:
+                      type: integer
+                      example: 5
+                    dish_name:
+                      type: string
+                      example: Caesar Salad
+                    quantity:
+                      type: integer
+                      example: 2
+                    unit_price:
+                      type: number
+                      example: 120.5
+                    total_item_price:
+                      type: number
+                      example: 241.0
+        404:
+          description: Замовлення не знайдено

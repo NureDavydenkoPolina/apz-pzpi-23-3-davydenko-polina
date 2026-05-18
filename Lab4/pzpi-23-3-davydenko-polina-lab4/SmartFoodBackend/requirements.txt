@@ -1,0 +1,7 @@
+Flask
+Flasgger
+Flask-SQLAlchemy
+SQLAlchemy
+pyodbc
+flask-jwt-extended
+flask-cors
